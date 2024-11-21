@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { config } from '@/lib/config';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { config } from '../../lib/config';
 import { rateLimit } from 'express-rate-limit';
 
 export const authLimiter = rateLimit({
@@ -18,7 +18,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
 
   try {
     const decoded = jwt.verify(token, config.jwt.secret);
-    req.user = decoded;
+    req.user = typeof decoded === 'string' ? { userId: decoded } : decoded as JwtPayload;
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Invalid token' });

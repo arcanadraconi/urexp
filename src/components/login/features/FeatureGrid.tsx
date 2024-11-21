@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Shield, Zap, Clock, LineChart } from 'lucide-react';
 import { FeatureCard } from './FeatureCard';
 

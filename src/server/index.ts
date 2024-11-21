@@ -19,7 +19,7 @@ app.use(cors({
 app.use(express.json());
 
 // Health check route
-app.get('/health', (req, res) => {
+app.get('/health', (_req: express.Request, res: express.Response) => {
   res.json({ status: 'ok' });
 });
 
@@ -27,7 +27,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 
 // Error handling
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Error:', err.message);
   res.status(500).json({ message: 'Something went wrong!' });
 });

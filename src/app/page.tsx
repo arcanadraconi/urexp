@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Button } from "../components/ui/button"
 import { ArrowUpRight, Download, Copy, RotateCcw, User, Bell, Settings, X, Edit2, Save } from 'lucide-react'
-import Image from 'next/image'
 import { config } from '../lib/config'
+import styles from './styles.module.css'
 
 export default function URExpertApp() {
   const [showReport, setShowReport] = useState(false)
@@ -76,7 +76,7 @@ Follow these guidelines strictly:
   4. DO NOT mention patient names, family names, or MD names for HIPAA purposes.
   5. Do not include sections or data if the information is not provided.
   6. Do not be creative or add information not provided in the patient data.
-  7. Use the exact section titles as given in the input.
+  7. Use the exact section titles as given in the input data.
   8. Maintain the order of sections as they appear in the input data.
   9. Do not add any additional sections or commentary.
   10. Summary of status: Provide a brief explanation of why the chosen status (IP, OSV, Outpatient, PA) is appropriate based on the patient's condition and progression. (short paragraph)
@@ -142,7 +142,7 @@ ${chartData}`
       setShowReport(true)
       generateReport(inputValue)
     }
-  }, [inputValue, generateReport])
+  }, [inputValue])
 
   const toggleReport = () => {
     setShowReport(prev => !prev)
@@ -191,7 +191,7 @@ ${chartData}`
   }, [inputValue, handleSubmit])
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#000000] via-[#101F28] to-[#1D324B] font-montserrat text-[#E9E9E9] overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-b from-[#000000] via-[#101F28] to-[#1D324B] font-montserrat text-[#E9E9E9] overflow-hidden ${styles.bgGradient}`}>
       <div className="container mx-auto px-4 py-6">
         <header className="flex justify-end mb-8">
           <div className="flex items-center space-x-4">
@@ -205,13 +205,12 @@ ${chartData}`
         <main className="flex min-h-[80vh] items-center justify-center relative">
           <div className={`flex flex-col items-center transition-all duration-700 ease-in-out transform ${showReport ? 'translate-x-[0%]' : 'translate-x-20'}`} style={{ width: showReport ? '50%' : '100%' }}>
             <div className={`transition-all duration-700 ease-in-out transform ${showReport ? 'scale-90' : 'scale-100'}`}>
-              <Image
+              <img
                 src="/urexpertlogo.png"
                 alt="UREXPERT Logo"
                 width={450}
                 height={450}
                 className="mb-2 drop-shadow-2xl"
-                priority
               />
             </div>
             <form onSubmit={handleSubmit} className="w-full max-w-md">
@@ -220,7 +219,7 @@ ${chartData}`
                   placeholder="Add your patient's chart"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  className="w-full bg-transparent border-2 border-[#96C21A] rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#96C21A] transition-all duration-300"
+                  className={`w-full bg-transparent border-2 border-[#96C21A] rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#96C21A] transition-all duration-300 ${styles.noScrollbar}`}
                 />
                 <Button
                   type="submit"
@@ -233,7 +232,7 @@ ${chartData}`
           </div>
 
           <div 
-            className={`flex-grow transition-all  duration-500 ease-out transform ${showReport ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'}`}>
+            className={`flex-grow transition-all duration-500 ease-out transform ${showReport ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'}`}>
             <div className="bg-[#0D1D2D] rounded-lg p-6 border border-[#96C21A] shadow-xl relative max-w-[800px]">
               
               <div className="flex justify-end space-x-2 mb-4">
@@ -273,7 +272,7 @@ ${chartData}`
                       <textarea
                         value={editableReport}
                         onChange={(e) => setEditableReport(e.target.value)}
-                        className="w-full h-[650px] bg-transparent border-none focus:outline-none resize-none text-[0.89rem] text-[#E9E9E9]/60"
+                        className={`w-full h-[650px] bg-transparent border-none focus:outline-none resize-none text-[0.89rem] text-[#E9E9E9]/60 ${styles.noScrollbar}`}
                         style={{ height: 'calc(100vh - 250px)', minHeight: '650px' }}
                       />
                     ) : (
@@ -286,33 +285,6 @@ ${chartData}`
           </div>
         </main>
       </div>
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
-
-        body {
-          font-family: 'Montserrat', sans-serif;
-        }
-
-        .bg-gradient-to-b {
-          animation: gradientAnimation 10s ease infinite;
-          background-size: 200% 200%;
-        }
-
-        @keyframes gradientAnimation {
-          0% { background-position: 0% 0%; }
-          50% { background-position: 100% 100%; }
-          100% { background-position: 0% 0%; }
-        }
-
-        textarea::-webkit-scrollbar {
-          display: none;
-        }
-
-        textarea {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </div>
   )
 }

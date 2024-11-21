@@ -1,17 +1,18 @@
-import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User';
-import { config } from '@/lib/config';
+import { config } from '../../lib/config';
 import { sendVerificationEmail, sendPasswordResetEmail } from '../services/mail';
 import crypto from 'crypto';
+import { AsyncRequestHandler } from '../types/controller';
 
-export const register = async (req: Request, res: Response) => {
+export const register: AsyncRequestHandler = async (req, res) => {
   try {
     const { email, password, name, organizationId } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'Email already registered' });
+      res.status(400).json({ message: 'Email already registered' });
+      return;
     }
 
     const verificationToken = crypto.randomBytes(32).toString('hex');
@@ -33,22 +34,25 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login: AsyncRequestHandler = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      res.status(401).json({ message: 'Invalid credentials' });
+      return;
     }
 
     if (!user.emailVerified) {
-      return res.status(401).json({ message: 'Please verify your email first' });
+      res.status(401).json({ message: 'Please verify your email first' });
+      return;
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      res.status(401).json({ message: 'Invalid credentials' });
+      return;
     }
 
     const token = jwt.sign(
@@ -70,13 +74,14 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const verifyEmail = async (req: Request, res: Response) => {
+export const verifyEmail: AsyncRequestHandler = async (req, res) => {
   try {
     const { token } = req.query;
 
     const user = await User.findOne({ verificationToken: token });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid verification token' });
+      res.status(400).json({ message: 'Invalid verification token' });
+      return;
     }
 
     user.emailVerified = true;
@@ -89,13 +94,14 @@ export const verifyEmail = async (req: Request, res: Response) => {
   }
 };
 
-export const forgotPassword = async (req: Request, res: Response) => {
+export const forgotPassword: AsyncRequestHandler = async (req, res) => {
   try {
     const { email } = req.body;
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: 'User not found' });
+      return;
     }
 
     const resetToken = crypto.randomBytes(32).toString('hex');
@@ -111,7 +117,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
   }
 };
 
-export const resetPassword = async (req: Request, res: Response) => {
+export const resetPassword: AsyncRequestHandler = async (req, res) => {
   try {
     const { token, password } = req.body;
 
@@ -121,7 +127,8 @@ export const resetPassword = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid or expired reset token' });
+      res.status(400).json({ message: 'Invalid or expired reset token' });
+      return;
     }
 
     user.password = password;

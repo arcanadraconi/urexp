@@ -4,7 +4,7 @@ import { Button } from '../ui/button/Button';
 import { Input } from '../ui/input/Input';
 import { useState } from 'react';
 import { ProfileAnalytics } from './ProfileAnalytics';
-import { useAuth } from '@/features/auth/context/AuthContext';
+import { useAuth } from '../../features/auth/context/AuthContext';
 
 interface ProfilePanelProps {
   onClose: () => void;
@@ -37,6 +37,14 @@ export const ProfilePanel = ({ onClose }: ProfilePanelProps) => {
   const handleSave = () => {
     // Here you would typically save the changes to your backend
     setEditingField(null);
+  };
+
+  const toggleEdit = (field: string) => {
+    if (editingField === field) {
+      handleSave();
+    } else {
+      setEditingField(field);
+    }
   };
 
   return (
@@ -113,7 +121,7 @@ export const ProfilePanel = ({ onClose }: ProfilePanelProps) => {
                       variant="ghost"
                       size="icon"
                       className="hover:bg-[#96C21A]/10"
-                      onClick={() => setEditingField(editingField === 'name' ? null : 'name')}
+                      onClick={() => toggleEdit('name')}
                     >
                       <Edit2 className="w-4 h-4 text-[#96C21A]" />
                     </Button>
@@ -137,7 +145,7 @@ export const ProfilePanel = ({ onClose }: ProfilePanelProps) => {
                       variant="ghost"
                       size="icon"
                       className="hover:bg-[#96C21A]/10"
-                      onClick={() => setEditingField(editingField === 'email' ? null : 'email')}
+                      onClick={() => toggleEdit('email')}
                     >
                       <Edit2 className="w-4 h-4 text-[#96C21A]" />
                     </Button>
@@ -163,7 +171,7 @@ export const ProfilePanel = ({ onClose }: ProfilePanelProps) => {
                       variant="ghost"
                       size="icon"
                       className="hover:bg-[#96C21A]/10"
-                      onClick={() => setEditingField(editingField === 'dailyGoal' ? null : 'dailyGoal')}
+                      onClick={() => toggleEdit('dailyGoal')}
                     >
                       <Edit2 className="w-4 h-4 text-[#96C21A]" />
                     </Button>

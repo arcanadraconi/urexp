@@ -12,6 +12,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   API_URL: z.string().url().default('http://localhost:5173'),
   PORT: z.string().transform(Number).default('5000'),
+  OPENROUTER_API_KEY: z.string().optional(),
 });
 
 // Parse and validate environment variables
@@ -35,4 +36,5 @@ export const config = {
   env: env.NODE_ENV,
   apiUrl: env.API_URL,
   port: env.PORT,
+  openRouterApiKey: env.OPENROUTER_API_KEY,
 } as const;
